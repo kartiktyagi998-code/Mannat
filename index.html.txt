@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Romantic Proposal Interactive</title>
+<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet" />
+<style>
+    body {
+	<audio id="backgroundAudio" src="song.mp3" autoplay></audio>
+        margin: 0;
+        padding: 0;
+        background: linear-gradient(135deg, #ffdde1, #ee9ca7, #b993d6, #8ca6db);
+        min-height: 100vh;
+        font-family: 'Playfair Display', serif;
+        overflow-x: hidden;
+    }
+    .background-hearts {
+        position: fixed;
+        width: 100vw;
+        height: 100vh;
+        z-index: 0;
+        pointer-events: none;
+    }
+    .background-hearts::before {
+        content: "💖💕💝💗💓💞";
+        font-size: 4vw;
+        opacity: 0.08;
+        position: absolute;
+        top: 10%;
+        left: 10%;
+        transform: rotate(-15deg);
+        z-index: 0;
+    }
+    .container {
+        position: relative;
+        z-index: 2;
+        max-width: 500px;
+        background: rgba(255,255,255,0.8);
+        margin: 8vh auto 0 auto;
+        border-radius: 24px;
+        box-shadow: 0 4px 30px rgba(222,143,171,0.22);
+        padding: 2.5rem 2rem 2rem 2rem;
+    }
+    .romantic-question {
+        text-align: center;
+        font-family: 'Dancing Script', cursive;
+        font-size: 2.5rem;
+        margin-bottom: 1.2rem;
+        color: #d64f7b;
+        letter-spacing: 0.02em;
+    }
+    .humble-message {
+        position: fixed;
+        top: 40%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 9999;
+        text-align: center;
+        font-size: 1.18rem;
+        color: #9d1457;
+        background: rgba(255,236,251,0.7);
+        padding: 8px 20px;
+        border-radius: 18px;
+        min-height: 40px;
+        margin-bottom: 1.4rem;
+        font-style: italic;
+        box-shadow: 0 0 15px rgba(217, 83, 119, 0.7);
+        min-width: 280px;
+        max-width: 90vw;
+        pointer-events: none;
+        transition: opacity 0.25s ease;
+        opacity: 0;
+    }
+    .sample-humble-section {
+        text-align: center;
+        margin-bottom: 1.3rem;
+    }
+    .sample-humble-section h3 {
+        margin: 0 0 0.3rem 0;
+        font-size: 1.21rem;
+        color: #ba3f72;
+        font-family: 'Playfair Display', serif;
+    }
+    .sample-humble-list {
+        list-style-type: heart;
+        margin: 0; padding: 0;
+    }
+    .sample-humble-list li {
+        text-align: left;
+        font-size: 0.99rem;
+        color: #b31149;
+        font-family: 'Playfair Display', serif;
+        background: #fde6fa;
+        border-radius: 8px;
+        margin: 0.15em 0;
+        padding: 4px 10px;
+        display: inline-block;
+    }
+    .button-row {
+        display: flex;
+        flex-direction: row;
+        justify-content: left;
+        gap: 30px;
+        position: relative;
+        min-height: 60px;
+    }
+    .btn {
+        font-family: 'Dancing Script', cursive;
+        font-size: 1.45rem;
+        border: none;
+        border-radius: 13px;
+        padding: 0.85em 2em;
+        outline: none;
+        transition: all 0.18s cubic-bezier(.68,-0.55,.27,1.55);
+        cursor: pointer;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.12);
+    }
+    .btn-yes {
+        background: linear-gradient(90deg, #ffb4d2 30%, #e6467a 100%);
+        color: #7b1251;
+        font-weight: bold;
+        margin-right: 0;
+        z-index: 1 0;
+        position: relative;
+        transform-origin: center center;
+    }
+    .btn-no {
+        background: #f2e7f3;
+        color: #d65f8a;
+        margin-left: 0;
+        z-index: 12;
+        position: fixed;
+        left: 180px;
+        top: 0;
+        transition: left 0.3s ease, top 0.3s ease;
+    }
+    .btn-yes:active, .btn-yes:hover {
+        background: linear-gradient(90deg, #e6467a 20%, #ca407c 90%);
+        color: #fff;
+        transform: scale(1.08);
+    }
+    .btn-no:hover, .btn-no:focus {
+        background: #fde8ef;
+        color: #e6467a;
+    }
+    .celebration {
+        text-align: center;
+        margin: 2rem 0 0 0;
+    }
+    .hidden {
+        display: none;
+    }
+    .congrats {
+        font-family: 'Dancing Script', cursive;
+        font-size: 2rem;
+        color: #e6467a;
+        margin-bottom: 1rem;
+    }
+    .video-container {
+        width: 100%;
+        max-width: 400px;
+        margin: 1.3rem auto 0 auto;
+    }
+    .video-container iframe {
+        width: 100%;
+        height: 240px;
+        border-radius: 12px;
+        border: 2px solid #ef84b1;
+    }
+    @media (max-width: 600px) {
+        .container {
+            max-width: 98vw;
+            padding: 1.5rem 0.7rem 1.2rem 0.7rem;
+        }
+        .romantic-question { font-size: 1.4rem; }
+        .video-container iframe { height: 145px; }
+    }
+    @keyframes shake {
+        0% { transform: translate(0, 0) rotate(0deg);}
+        25% { transform: translate(-5px, 2px) rotate(-3deg);}
+        50% { transform: translate(7px, -1px) rotate(2deg);}
+        75% { transform: translate(-3px, 3px) rotate(-2deg);}
+        100% { transform: translate(0,0) rotate(0deg);}
+    }
+    .btn-no.shake {
+        animation: shake 0.22s;
+    }
+</style>
+</head>
+<body>
+<div class="background-hearts"></div>
+<div class="container">
+
+    <h1 class="romantic-question">Kannu Do You Love❤️ Me?</h1>
+    <div id="humbleRequest" class="humble-message"></div>
+
+
+    <div class="button-row">
+        <button id="yesBtn" class="btn btn-yes">YES! ❤️</button>
+        <button id="noBtn" class="btn btn-no">No... 💔</button>
+    </div>
+    <div id="celebrate" class="celebration hidden">
+        <h2 class="congrats">Yay! You made my day! ❤️</h2>
+        <div class="video-container">
+            <video autoplay muted controls loop play width="100%" style="border-radius: 12px; border: 2px solid #ef84b1; max-width: 400px;">
+  <source src="Cartoon_Hug_and_I_Love_You_Video.mp4" type="video/mp4" />
+  Your browser does not support the video tag.
+</video>
+
+        </div>
+    </div>
+</div>
+<script>
+// Humble messages for each "No" interaction
+const HUMBLE_REQUESTS = [
+    "Please, think again! You're my everything. 💌",
+    "Don't say no, you mean the world to me! 🥺",
+    "One more chance for us? ❤️",
+    "Can we make more memories together? 🌷",
+    "You complete me! Please reconsider. 💑",
+    "I promise to cherish every moment. 🌹",
+    "No one loves you like I do! 😘",
+    "Stay with me forever? 💖",
+    "Every day is better with you. Give us a chance! 🫶",
+    "It’s you and me, always! Please say yes. 💞"
+];
+// Populate the Sample Humble Request Messages list
+window.addEventListener("DOMContentLoaded", () => {
+    const sampleList = document.getElementById("sampleList");
+    if (sampleList) {
+        HUMBLE_REQUESTS.forEach(msg => {
+            const li = document.createElement("li");
+            li.textContent = msg;
+            sampleList.appendChild(li);
+        });
+    }
+    setTimeout(() => {
+        setInitialNoButtonPosition();
+    }, 150);
+});
+const yesBtn = document.getElementById("yesBtn");
+const noBtn = document.getElementById("noBtn");
+const humbleRequest = document.getElementById("humbleRequest");
+const celebrate = document.getElementById("celebrate");
+const container = document.querySelector(".button-row");
+
+let yesBtnScale = 1;
+let noMoved = false; // Track if NO moved from initial position
+
+// Set initial NO button position next to YES button
+function setInitialNoButtonPosition() {
+    const yesRect = yesBtn.getBoundingClientRect();
+    const btnHeight = noBtn.offsetHeight;
+    noBtn.style.position = "fixed";
+    noBtn.style.left = (yesRect.right + 150) + "px"; // 10px gap
+    noBtn.style.top = (yesRect.top + (yesRect.height - btnHeight) / 2) + "px";
+}
+
+// Get random humble message
+function getRandomHumble() {
+    const idx = Math.floor(Math.random() * HUMBLE_REQUESTS.length);
+    return HUMBLE_REQUESTS[idx];
+}
+
+// Handle NO button interaction
+function handleNoBtnInteract() {
+    humbleRequest.textContent = getRandomHumble();
+    humbleRequest.style.opacity = "1";
+
+    yesBtnScale += 0.14;
+    yesBtn.style.transform = `scale(${yesBtnScale})`;
+
+    if (!noMoved) {
+        noMoved = true;
+        moveNoBtnNearYes();
+    } else {
+        moveNoBtnNearYes();
+    }
+
+    noBtn.classList.remove("shake");
+    void noBtn.offsetWidth;
+    noBtn.classList.add("shake");
+}
+
+// Move NO button near YES button within radius, clamped to window
+function moveNoBtnNearYes() {
+    const yesRect = yesBtn.getBoundingClientRect();
+    const btnHeight = noBtn.offsetHeight;
+    const btnWidth = noBtn.offsetWidth;
+
+    const centerX = yesRect.left + yesRect.width / 2;
+    const centerY = yesRect.top + yesRect.height / 2;
+    const radius = 90 + Math.random() * 50;
+    const angle = Math.random() * Math.PI * 2;
+
+    let newX = centerX + radius * Math.cos(angle) - btnWidth / 2;
+    let newY = centerY + radius * Math.sin(angle) - btnHeight / 2;
+
+    const minX = 0, minY = 0;
+    const maxX = window.innerWidth - btnWidth;
+    const maxY = window.innerHeight - btnHeight - 20;
+
+    newX = Math.max(minX, Math.min(newX, maxX));
+    newY = Math.max(minY, Math.min(newY, maxY));
+
+    noBtn.style.left = `${newX}px`;
+    noBtn.style.top = `${newY}px`;
+}
+
+yesBtn.addEventListener("click", () => {
+    document.querySelector(".romantic-question").classList.add("hidden");
+    container.classList.add("hidden");
+    humbleRequest.classList.add("hidden");
+    celebrate.classList.remove("hidden");
+});
+
+noBtn.addEventListener("mouseenter", handleNoBtnInteract);
+noBtn.addEventListener("click", handleNoBtnInteract);
+noBtn.addEventListener("touchstart", handleNoBtnInteract);
+
+</script>
+</body>
+</html>
